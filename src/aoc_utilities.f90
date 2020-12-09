@@ -15,6 +15,7 @@ module aoc_utilities
     public :: sort_ascending
     public :: split
     public :: read_line_from_file
+    public :: unique
 
 contains
 
@@ -363,6 +364,46 @@ contains
     end do
 
     end subroutine read_line_from_file
+!*****************************************************************************************
+
+!*****************************************************************************************
+function unique(vec) result(vec_unique)
+! Return only the unique values from vec.
+
+implicit none
+
+integer,dimension(:),intent(in) :: vec
+integer,dimension(:),allocatable :: vec_unique
+
+integer :: i,num
+logical,dimension(size(vec)) :: mask
+
+mask = .false.
+
+do i=1,size(vec)
+
+    !count the number of occurrences of this element:
+    num = count( vec(i)==vec )
+
+    if (num==1) then
+        !there is only one, flag it:
+        mask(i) = .true.
+    else
+        !flag this value only if it hasn't already been flagged:
+        if (.not. any(vec(i)==vec .and. mask) ) mask(i) = .true.
+    end if
+
+end do
+
+!return only flagged elements:
+allocate( vec_unique(count(mask)) )
+vec_unique = pack( vec, mask )
+
+!if you also need it sorted, then do so.
+! For example, with slatec routine:
+!call ISORT (vec_unique, [0], size(vec_unique), 1)
+
+end function unique
 !*****************************************************************************************
 
 end module aoc_utilities
