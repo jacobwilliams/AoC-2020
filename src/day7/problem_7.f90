@@ -67,7 +67,6 @@ end do
 bag_count = 0
 do i = 1, n_lines
     if (i==index_to_find) cycle
-
     found = .false.
     call find_bag(i, found)
     if (found) then
