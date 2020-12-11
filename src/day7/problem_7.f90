@@ -11,16 +11,18 @@ type :: bag
     integer :: id = 0
     character(len=:),allocatable :: name
     integer,dimension(:),allocatable :: contents ! bags containied within (ids)
+    integer,dimension(:),allocatable :: count    ! the count of each bag in the contents array
     character(len=:),allocatable :: tmp
 end type bag
 
 type(bag),dimension(:),allocatable :: bags
-integer :: iunit, istat, n_lines, i, j, k, bag_count
-character(len=:),allocatable :: line
+integer :: iunit, istat, n_lines, i, j, k, bag_count, ival
+character(len=:),allocatable :: line, val_str
 logical :: status_ok
-type(string),dimension(:),allocatable :: bag_contents
+type(string),dimension(:),allocatable :: bag_contents, tmp
 logical :: found
 integer :: index_to_find
+integer(int64) :: total_bag_count
 
 integer,parameter :: chunk_size = 256
 character(len=*),parameter :: bag_to_find = 'shiny gold'
@@ -39,6 +41,7 @@ do i = 1, n_lines
     bags(i)%id = i
     bags(i)%name = trim(adjustl(bag_contents(1)%str))
     allocate(bags(i)%contents(0))
+    allocate(bags(i)%count(0))
     bags(i)%tmp = trim(adjustl(bag_contents(2)%str))  ! save for later
     if (bags(i)%name == bag_to_find) index_to_find = i ! save this index
 end do
@@ -51,10 +54,17 @@ do i = 1, n_lines
         do j = 1, size(bag_contents)
             found = .false.
             ! find the index of this bag
+            bag_contents(j)%str = trim(adjustl(bag_contents(j)%str))
             do k = 1, n_lines
                 if (index(bag_contents(j)%str, bags(k)%name)>0) then
                     found = .true.
                     bags(i)%contents = [bags(i)%contents, k]
+                    ! get count:
+                    call split(bag_contents(j)%str,' ',chunk_size,tmp)
+                    val_str = trim(adjustl(tmp(1)%str)) ! number of bags
+                    !write(*,*) bag_contents(j)%str, ' : ', val_str
+                    read(val_str,*) ival
+                    bags(i)%count = [bags(i)%count, ival]
                     exit
                 end if
             end do
@@ -77,6 +87,10 @@ end do
 
 write(*,*) 'number of valid outermost bags: ', bag_count
 
+! How many individual bags are required inside your single shiny gold bag?
+total_bag_count = count_bags(index_to_find)
+write(*,*) 'number of bags contained in '//bag_to_find//' bag:', total_bag_count
+
 contains
 
     recursive subroutine find_bag(bag_id, found)
@@ -96,5 +110,22 @@ contains
         end do
     end if
     end subroutine find_bag
+
+    recursive function count_bags(bag_id) result(total_count)
+    implicit none
+    integer,intent(in) :: bag_id
+    integer(int64) :: total_count  !! total number of bags within bag_id
+    integer :: i
+
+    total_count = 0
+    if (size(bags(bag_id)%contents)>0) then
+        do i = 1, size(bags(bag_id)%contents)
+            total_count = total_count + &
+                          bags(bag_id)%count(i) + &
+                          bags(bag_id)%count(i) * count_bags(bags(bag_id)%contents(i))
+        end do
+    end if
+
+    end function count_bags
 
 end program problem_7
