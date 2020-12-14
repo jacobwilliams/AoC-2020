@@ -10,7 +10,7 @@ module aoc_utilities
         character(len=:),allocatable :: str
     end type string
 
-    public :: read_file_to_integer_array
+    public :: read_file_to_integer_array, read_file_to_integer64_array
     public :: number_of_lines_in_file
     public :: sort_ascending
     public :: split
@@ -39,6 +39,28 @@ contains
     close(iunit)
 
     end function read_file_to_integer_array
+!****************************************************************
+
+!****************************************************************
+    function read_file_to_integer64_array(filename) result(iarray)
+
+    character(len=*),intent(in) :: filename
+    integer(int64),dimension(:),allocatable :: iarray
+
+    integer :: i, iunit, n_lines, istat
+
+    open(newunit=iunit, file=filename, iostat=istat)
+    if (istat /= 0) error stop ' error reading file'
+
+    n_lines = number_of_lines_in_file(iunit)
+    allocate(iarray(n_lines))
+    do i = 1, n_lines
+        read(iunit, *) iarray(i)
+    end do
+
+    close(iunit)
+
+    end function read_file_to_integer64_array
 !****************************************************************
 
 !****************************************************************
