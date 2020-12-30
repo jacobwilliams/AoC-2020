@@ -44,8 +44,8 @@ COMPILER=ifort
 # $COMPILER ./src/aoc_utilities.f90 ./src/day11/problem_11.f90 -o  ./src/day11/_prob11
 
 rm -rf ./src/day12/_*
-$COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12.f90 -o  ./src/day12/_prob12
-
+#$COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12.f90 -o  ./src/day12/_prob12
+$COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12b.f90 -o  ./src/day12/_prob12b
 
 
 
