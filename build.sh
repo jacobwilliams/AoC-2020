@@ -2,9 +2,6 @@
 
 #source /opt/intel/oneapi/setvars.sh
 
-# rm -rf ./bin
-# mkdir ./bin 
-
 COMPILER=ifort
 
 # rm -rf ./src/day1/_*
@@ -43,10 +40,12 @@ COMPILER=ifort
 # rm -rf ./src/day11/_*
 # $COMPILER ./src/aoc_utilities.f90 ./src/day11/problem_11.f90 -o  ./src/day11/_prob11
 
-rm -rf ./src/day12/_*
-#$COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12.f90 -o  ./src/day12/_prob12
-$COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12b.f90 -o  ./src/day12/_prob12b
+# rm -rf ./src/day12/_*
+# $COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12.f90 -o  ./src/day12/_prob12
+# $COMPILER ./src/aoc_utilities.f90 ./src/day12/problem_12b.f90 -o  ./src/day12/_prob12b
 
+rm -rf ./src/day13/_*
+$COMPILER ./src/aoc_utilities.f90 ./src/day13/problem_13.f90 -o  ./src/day13/_prob13
 
 
 
